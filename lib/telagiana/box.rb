@@ -53,14 +53,10 @@ class Box < Widget
 
   def draw
     # Disegna lo sfondo se specificato
-    if @background_color && @width > 0 && @height > 0
-      Gosu.draw_rect(absolute_x, absolute_y, @width, @height, @background_color)
-    end
+    Gosu.draw_rect(absolute_x, absolute_y, @width, @height, @background_color) if @background_color && @width.positive? && @height.positive?
 
     # Disegna il bordo se specificato
-    if @border_color && @border_size > 0 && @width > 0 && @height > 0
-      draw_border
-    end
+    draw_border if @border_color && @border_size.positive? && @width.positive? && @height.positive?
 
     # Disegna i figli
     @children.each(&:draw)
