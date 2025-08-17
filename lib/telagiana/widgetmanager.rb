@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Gestore dei Widget
-class WidgetManager
+module TelaGiana
+  # Gestore dei Widget
+  class WidgetManager
   @@main_window = nil
 
   def self.main_window
@@ -10,7 +11,7 @@ class WidgetManager
 
   def initialize(window)
     @@main_window = window
-    @root_box = Box.new(0, 0, window.width, window.height)
+    @root_box = TelaGiana::Box.new(0, 0, window.width, window.height)
     @focusable_widgets = []
     @focused_widget = nil
     @focused_index = -1
@@ -52,18 +53,18 @@ class WidgetManager
     # Controlla dal widget più in alto (ultimo aggiunto) al primo
     all_widgets.reverse.each do |widget|
       if widget.on_click(x, y)
-        focused_widget(widget)
+        focus_widget(widget)
         return true
       end
     end
 
     # Se non si è cliccato su nessun widget, rimuovi il focus
-    focused_widget(nil)
+    focus_widget(nil)
     false
   end
 
   def has_input_field_focused?
-    @focused_widget.is_a?(InputField)
+    @focused_widget.is_a?(TelaGiana::InputField)
   end
 
   def on_mouse_move(x, y)
@@ -92,19 +93,23 @@ class WidgetManager
     end
   end
 
+  def button_up(id)
+    @focused_widget&.button_up(id) if @focused_widget.respond_to?(:button_up)
+  end
+
   private
 
   def collect_focusable_from_box(box)
     box.children.each do |widget|
-      if widget.is_a?(InputField) || widget.is_a?(Button) || widget.is_a?(InvisibleButton)
+      if widget.is_a?(TelaGiana::InputField) || widget.is_a?(TelaGiana::InputBox) || widget.is_a?(TelaGiana::Button) || widget.is_a?(TelaGiana::InvisibleButton)
         @focusable_widgets << widget
-      elsif widget.is_a?(Box)
+      elsif widget.is_a?(TelaGiana::Box)
         collect_focusable_from_box(widget)
       end
     end
   end
 
-  def focused_widget(widget)
+  def focus_widget(widget)
     @focused_widget&.unfocus
     @focused_widget = widget
     @focused_widget&.focus
@@ -121,15 +126,16 @@ class WidgetManager
     return if @focusable_widgets.empty?
 
     @focused_index = (@focused_index + 1) % @focusable_widgets.length
-    focused_widget(@focusable_widgets[@focused_index])
+    focus_widget(@focusable_widgets[@focused_index])
   end
 
   def focus_previous_widget
     return if @focusable_widgets.empty?
 
     @focused_index = (@focused_index - 1) % @focusable_widgets.length
-    focused_widget(@focusable_widgets[@focused_index])
+    focus_widget(@focusable_widgets[@focused_index])
   end
 
+  end
 end
 

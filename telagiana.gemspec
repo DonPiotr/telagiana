@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = 'telagiana'
-  spec.version = '0.5.0'
+  spec.version = '0.5.3'
   spec.authors = ['don Piotr Talarczyk']
   spec.email = ['don.piotr@netc.it']
 

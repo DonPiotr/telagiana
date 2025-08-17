@@ -1,44 +1,57 @@
 # frozen_string_literal: true
 
-# Custom TextInput per filtering
-class NumericTextInput < Gosu::TextInput
-  def initialize
-    super
-    @numeric_only = false
+module TelaGiana
+  # Custom TextInput per filtering
+  class TextInputModed < Gosu::TextInput
+  def initialize(mode = nil)
+    super()
+    # mode can be :numeric_only, :one_word
+    @mode = mode
   end
 
-  attr_accessor :numeric_only
+  attr_accessor :mode
 
   def filter(text_in)
-    if @numeric_only
+    if @mode == :numeric_only
       text_in.gsub(/[^0-9.\-]/, '')
+    elsif @mode == :one_word
+      text_in.gsub(/ /, '')
     else
       text_in
     end
   end
-end
+  end
 
-# Widget Campo di Input
-class InputField < Widget
-  attr_accessor :font_size, :background_color, :text_color, :border_color, :placeholder, :numeric_only, :padding
+  # Widget Campo di Input
+  class InputField < Widget
+  attr_accessor :font_size, :background_color, :text_color, :border_color, :placeholder, :padding
 
   def initialize(placeholder = '', width = 150, height = 30)
     super(nil, nil, width, height)
     @placeholder = placeholder
     @font_size = 16
-    @font = Gosu::Font.new(@font_size)
+    @font = Gosu::Font.new(@font_size, name: "Noto Sans Mono")
     @background_color = Gosu::Color::WHITE
     @text_color = Gosu::Color::BLACK
     @border_color = Gosu::Color::GRAY
     @focused_border_color = Gosu::Color::BLUE
     @cursor_timer = 0
-    @numeric_only = false
-    @text_input = NumericTextInput.new
+    @text_input = TextInputModed.new
     @padding = 8
   end
 
   def text
     @text_input.text
+  end
+
+  def mode=(v)
+    return unless [nil, :numeric_only, :one_word].include? v
+
+    @text_input.mode = v
+  end
+
+  def mode
+    @text_input.mode
   end
 
   def update; end
@@ -80,13 +93,13 @@ class InputField < Widget
     # Calcola l'offset per centrare il cursore nell'area visibile
     cursor_pos = text_empty_and_unfocused? ? 0 : @text_input.caret_pos
     available_width = @width - (@padding * 2)
-    
+
     # Trova l'offset ottimale per mostrare il cursore
     @text_start_offset = calculate_scroll_offset(full_text, cursor_pos, available_width)
-    
+
     # Applica l'offset
     @display_text = full_text[@text_start_offset..-1] || ''
-    
+
     # Taglia ulteriormente se necessario
     while @font.text_width(@display_text) > available_width && !@display_text.empty?
       @display_text = @display_text[0..-2]
@@ -115,20 +128,20 @@ class InputField < Widget
 
     # Ora affina l'offset basandoti sulla larghezza effettiva del testo
     offset = desired_start
-    
+
     # Aggiusta per assicurarti che il cursore sia visibile
     loop do
       # Calcola il testo che sarebbe visibile con questo offset
       visible_text = text[offset..-1]
-      
+
       # Taglia il testo per farlo entrare nell'area
       while @font.text_width(visible_text) > available_width && !visible_text.empty?
         visible_text = visible_text[0..-2]
       end
-      
+
       # Controlla se il cursore è nel range visibile
       cursor_in_visible = cursor_pos >= offset && cursor_pos <= offset + visible_text.length
-      
+
       if cursor_in_visible
         break
       elsif cursor_pos < offset
@@ -138,7 +151,7 @@ class InputField < Widget
         offset += 1
         break if offset >= text.length
       end
-      
+
       # Evita loop infiniti
       break if offset < 0 || offset > cursor_pos + 10
     end
@@ -199,12 +212,12 @@ class InputField < Widget
 
   def focus
     @focused = true
-    WidgetManager.main_window.text_input = @text_input if WidgetManager.main_window
+    TelaGiana::WidgetManager.main_window.text_input = @text_input if TelaGiana::WidgetManager.main_window
   end
 
   def unfocus
     @focused = false
-    WidgetManager.main_window.text_input = nil if WidgetManager.main_window
+    TelaGiana::WidgetManager.main_window.text_input = nil if TelaGiana::WidgetManager.main_window
   end
 
   def numeric_only=(value)
@@ -216,6 +229,7 @@ class InputField < Widget
 
   def numeric_char?(char)
     char.match?(/\A[0-9.\-]\z/)
+  end
   end
 end
 

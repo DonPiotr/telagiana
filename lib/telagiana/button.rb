@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
-# Widget Bottone
-class Button < Widget
+module TelaGiana
+  # Widget Bottone
+  class Button < Widget
   attr_accessor :text, :font_size, :background_color, :text_color, :border_color
   attr_reader :clicked
 
   def initialize(text = 'Button', width = nil, height = 30, &block)
     @text = text
     @font_size = 16
-    @font = Gosu::Font.new(@font_size)
+    @font = Gosu::Font.new(@font_size, name: "Noto Sans Mono")
 
     # Calcola larghezza automatica se non specificata
     width = @font.text_width(text) + 20 if width.nil?
@@ -95,6 +96,7 @@ class Button < Widget
     Gosu.draw_rect(absolute_x, absolute_y, border_width, @height, border_color)
     # Bordo destro
     Gosu.draw_rect(absolute_x + @width - border_width, absolute_y, border_width, @height, border_color)
+  end
   end
 end
 

@@ -8,52 +8,52 @@ class GameWindow < Gosu::Window
     super(800, 600)
     self.caption = 'Gosu Widget Library Demo - Layout Automatico'
 
-    @widget_manager = WidgetManager.new(self)
+    @widget_manager = TelaGiana::WidgetManager.new(self)
 
     # Crea un box principale per l'interfaccia
-    main_box = @widget_manager.add_box(Box.new(20, 20, width - 40, height - 40))
+    main_box = @widget_manager.add_box(TelaGiana::Box.new(20, 20, width - 40, height - 40))
 
     # Header principale
-    main_box.add_child(Header.new('Gestione Interfaccia', 1))
+    main_box.add_child(TelaGiana::Header.new('Gestione Interfaccia', 1))
 
     # Paragrafo introduttivo
     main_box.add_child(
-      Paragraph.new(
+      TelaGiana::Paragraph.new(
         'Benvenuto nella demo della libreria widget! Gli elementi si posizionano automaticamente.'
       )
     )
 
     # Sottosezione con header di livello 2
-    main_box.add_child(Header.new('Controlli', 2))
+    main_box.add_child(TelaGiana::Header.new('Controlli', 2))
 
     # Bottoni su una riga
-    main_box.add_child(Button.new('Primo') do
+    main_box.add_child(TelaGiana::Button.new('Primo') do
       puts 'Cliccato primo bottone!'
     end)
 
-    main_box.add_child(Button.new('Secondo') do
+    main_box.add_child(TelaGiana::Button.new('Secondo') do
       puts 'Cliccato secondo bottone!'
     end)
 
-    main_box.add_child(Button.new('Terzo') do
+    main_box.add_child(TelaGiana::Button.new('Terzo') do
       puts 'Cliccato terzo bottone!'
     end)
 
     # Interruzione di riga
-    main_box.add_child(Br.new)
+    main_box.add_child(TelaGiana::Br.new)
 
     # Campo input e bottone sulla riga successiva
-    @input = main_box.add_child(InputField.new('Scrivi qualcosa...'))
+    @input = main_box.add_child(TelaGiana::InputField.new('Scrivi qualcosa...'))
 
-    main_box.add_child(Button.new('Invia') do
+    main_box.add_child(TelaGiana::Button.new('Invia') do
       puts "Testo inviato: #{@input.text}"
     end)
 
     # Nuova sezione
-    main_box.add_child(Header.new('Box Nidificati', 2))
+    main_box.add_child(TelaGiana::Header.new('Box Nidificati', 2))
 
     # Box interno per dimostrare il nesting
-    inner_box = Box.new(0, 190, 350, 120)
+    inner_box = TelaGiana::Box.new(0, 190, 350, 120)
     inner_box.padding = 10
     inner_box.margin_x = 8
     inner_box.margin_y = 8
@@ -61,21 +61,21 @@ class GameWindow < Gosu::Window
     inner_box.border_color = Gosu::Color.new(50, 200, 200, 255)      # Bordo ciano
     inner_box.border_size = 2
 
-    inner_box.add_child(Paragraph.new('Questo è un box interno con i suoi widget:'))
-    inner_box.add_child(Button.new('A') { puts 'Bottone A' })
-    inner_box.add_child(Button.new('B') { puts 'Bottone B' })
-    inner_box.add_child(Button.new('C') { puts 'Bottone C' })
-    inner_box.add_child(Br.new)
-    input_in_box = inner_box.add_child(InputField.new('Campo nel box interno'))
-    input_in_box.numeric_only = true
+    inner_box.add_child(TelaGiana::Paragraph.new('Questo è un box interno con i suoi widget:'))
+    inner_box.add_child(TelaGiana::Button.new('A') { puts 'Bottone A' })
+    inner_box.add_child(TelaGiana::Button.new('B') { puts 'Bottone B' })
+    inner_box.add_child(TelaGiana::Button.new('C') { puts 'Bottone C' })
+    inner_box.add_child(TelaGiana::Br.new)
+    input_in_box = inner_box.add_child(TelaGiana::InputField.new('Campo nel box interno'))
+    input_in_box.mode = :numeric_only
 
     main_box.add_child(inner_box)
 
     # Bottone invisibile personalizzato
-    # main_box.add_child(Br.new)
-    main_box.add_child(Spacer.new(0, 330))
-    main_box.add_child(Paragraph.new('Bottone invisibile personalizzato:'))
-    @invisible_btn = main_box.add_child(InvisibleButton.new(200, 60) do
+    # main_box.add_child(TelaGiana::Br.new)
+    main_box.add_child(TelaGiana::Spacer.new(0, 330))
+    main_box.add_child(TelaGiana::Paragraph.new('Bottone invisibile personalizzato:'))
+    @invisible_btn = main_box.add_child(TelaGiana::InvisibleButton.new(200, 60) do
       puts 'Cliccato bottone invisibile personalizzato!'
     end)
   end
@@ -135,6 +135,10 @@ class GameWindow < Gosu::Window
     else
       @widget_manager.button_down(id)
     end
+  end
+
+  def button_up(id)
+    @widget_manager.button_up(id)
   end
 
   def update

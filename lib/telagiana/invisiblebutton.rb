@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Widget Bottone Invisibile (solo area cliccabile)
-class InvisibleButton < Widget
+module TelaGiana
+  # Widget Bottone Invisibile (solo area cliccabile)
+  class InvisibleButton < Widget
   attr_reader :clicked, :hover
 
   def initialize(width, height, &block)
@@ -48,6 +49,7 @@ class InvisibleButton < Widget
       @clicked = true
       @on_click_block&.call
     end
+  end
   end
 end
 

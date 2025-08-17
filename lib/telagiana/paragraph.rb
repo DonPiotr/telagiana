@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-# Widget Paragrafo per visualizzare testo
-class Paragraph < Widget
+module TelaGiana
+  # Widget Paragrafo per visualizzare testo
+  class Paragraph < Widget
   attr_accessor :font_size, :color
   attr_reader :text
 
   def initialize(text = '', font_size = 16, width = nil)
     @font_size = font_size
-    @font = Gosu::Font.new(font_size)
+    @font = Gosu::Font.new(font_size, name: "Noto Sans Mono")
 
     # Calcola larghezza automatica se non specificata
     width = @font.text_width(text) + 10 if width.nil?
@@ -66,6 +67,7 @@ class Paragraph < Widget
     lines = words_to_lines(words, width).length
 
     (lines * @font_size * 1.2) + 10
+  end
   end
 end
 

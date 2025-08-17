@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Classe base per tutti i widget
-class Widget
+module TelaGiana
+  # Classe base per tutti i widget
+  class Widget
   attr_accessor :x, :y, :width, :height, :visible, :enabled, :parent_container
   attr_reader :focused
 
@@ -60,5 +61,6 @@ class Widget
   def on_text_input(text); end
 
   def button_down(id); end
+  end
 end
 

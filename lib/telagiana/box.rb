@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Container invisibile per organizzare l'interfaccia
-class Box < Widget
+module TelaGiana
+  # Container invisibile per organizzare l'interfaccia
+  class Box < Widget
   attr_reader :children
   attr_accessor :padding, :margin_x, :margin_y, :background_color, :border_color, :border_size, :widget_manager
 
@@ -66,7 +67,7 @@ class Box < Widget
     result = []
     @children.each do |child|
       result << child
-      result.concat(child.all_widgets) if child.is_a?(Box)
+      result.concat(child.all_widgets) if child.is_a?(TelaGiana::Box)
     end
     result
   end
@@ -90,13 +91,13 @@ class Box < Widget
   end
 
   def position_widget_automatically(widget)
-    if widget.is_a?(Header)
+    if widget.is_a?(TelaGiana::Header)
       # Se è un Header, posizionalo all'inizio della riga e prende tutta la larghezza
       position_header_automatically widget
-    elsif widget.is_a?(Br)
+    elsif widget.is_a?(TelaGiana::Br)
       # Se è un Br, aggiungi interruzione di riga
       position_br_automatically widget
-    elsif widget.is_a?(Spacer)
+    elsif widget.is_a?(TelaGiana::Spacer)
       # Se è un Spacer, sposta il cursore alla posizione specificata
       position_spacer_automatically widget
     else
@@ -142,6 +143,7 @@ class Box < Widget
     # Il widget Spacer non ha bisogno di posizione specifica, serve solo per il cursore
     widget.x = 0
     widget.y = 0
+  end
   end
 end
 

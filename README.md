@@ -7,7 +7,7 @@ A Ruby widget library for Gosu that simplifies creating user interfaces with aut
 ## Features
 
 - **Automatic layout**: Widgets position themselves automatically without manual coordinate specification
-- **Ready-to-use widgets**: Button, InputField, Header, Paragraph, Box and more
+- **Ready-to-use widgets**: Button, InputField, InputBox, Header, Paragraph, Box and more
 - **Focus management**: TAB navigation between widgets
 - **Mouse and keyboard events**: Complete input event handling
 - **Nested boxes**: Containers that can hold other widgets and boxes
@@ -37,6 +37,9 @@ gem install telagiana
 
 ```ruby
 require 'telagiana'
+
+# Include TelaGiana module to use widgets without namespace prefix
+include TelaGiana
 
 class GameWindow < Gosu::Window
   def initialize
@@ -74,11 +77,32 @@ class GameWindow < Gosu::Window
     end
   end
 
+  def button_up(id)
+    @widget_manager.button_up(id)
+  end
+
   def update
     @widget_manager.update
     @widget_manager.on_mouse_move(mouse_x, mouse_y)
   end
 end
+```
+
+## TelaGiana Module
+
+All widgets are wrapped in the `TelaGiana` module. You can either:
+
+**Option 1: Use the namespace explicitly**
+```ruby
+@widget_manager = TelaGiana::WidgetManager.new(self)
+main_box = @widget_manager.add_box(TelaGiana::Box.new(20, 20, 400, 300))
+```
+
+**Option 2: Include the module (recommended)**
+```ruby
+include TelaGiana
+@widget_manager = WidgetManager.new(self)
+main_box = @widget_manager.add_box(Box.new(20, 20, 400, 300))
 ```
 
 ## Available Widgets
@@ -103,8 +127,17 @@ end
 ### InputField
 ```ruby
 input = InputField.new('placeholder', width=150, height=30)
-input.numeric_only = true  # numbers only
+input.mode = :numeric_only  # numbers, dots and dashes only
+input.mode = :one_word      # no spaces allowed
+input.mode = nil            # default - all characters allowed
 puts input.text  # read the text
+```
+
+### InputBox
+```ruby
+input_box = InputBox.new('placeholder', width=300, height=150)
+input_box.text = "Line 1\nLine 2\nLine 3"  # set multi-line text
+puts input_box.text  # read the text
 ```
 
 ### Box (Container)
@@ -148,6 +181,13 @@ Br.new  # line break
 - **Click**: Activate widget and set focus
 - **Hover**: Visual effects on widgets
 
+### InputBox Navigation
+- **Enter**: New line
+- **Arrow keys**: Navigate cursor
+- **Home/End**: Beginning/end of line
+- **Backspace/Delete**: Delete characters
+- **Mouse click**: Position cursor
+
 ## Nested Boxes
 
 ```ruby
@@ -169,11 +209,13 @@ button.border_color = Gosu::Color::RED
 input = InputField.new('Styled Input')
 input.background_color = Gosu::Color::YELLOW
 input.border_color = Gosu::Color::GREEN
+input.mode = :one_word  # single word only
 ```
 
-## Complete Example
+## Examples
 
-See `example/example.rb` for a complete example with all widgets and their features.
+- **Complete demo**: `example/example.rb` - Shows all widgets and features
+- **InputBox demo**: `example/example_input_box.rb` - Multi-line text input demo
 
 ## Dependencies
 
@@ -182,7 +224,7 @@ See `example/example.rb` for a complete example with all widgets and their featu
 
 ## Version
 
-Current version: 0.5.0
+Current version: 0.5.3
 
 ## License
 

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Widget Header
-class Header < Widget
+module TelaGiana
+  # Widget Header
+  class Header < Widget
   attr_accessor :text, :font_size, :color, :level
 
   def initialize(text = 'Header', level = 1)
@@ -13,7 +14,7 @@ class Header < Widget
     super(nil, nil, 0, @font_size + 10) # Altezza con padding
     @text = text
     @color = Gosu::Color::BLACK
-    @font = Gosu::Font.new(@font_size)
+    @font = Gosu::Font.new(@font_size, name: "Noto Sans Mono")
   end
 
   def draw
@@ -26,6 +27,7 @@ class Header < Widget
     return unless @level <= 2
     line_y = absolute_y + @height - 2
     Gosu.draw_rect(absolute_x, line_y, @width, 2, @color)
+  end
   end
 end
 
